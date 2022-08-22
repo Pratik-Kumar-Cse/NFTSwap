@@ -8,6 +8,10 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "./libraries/OrderType.sol";
 import "./interfaces/INFTSwap.sol";
 
+/// @title A title that should describe the contract/interface
+/// @author The name of the author
+/// @notice Explain to an end user what this does
+/// @dev Explain to a developer any extra details
 contract NFTSwap is INFTSwap,ReentrancyGuard{
 
     using OrderTypes for OrderTypes.Offer;
@@ -72,17 +76,13 @@ contract NFTSwap is INFTSwap,ReentrancyGuard{
         minimumTokensAmount = _minimumTokensAmount;
     }
 
-    /**
-     * @notice Require that the specified ID exists
-     */
+    
     modifier offerExits(uint256 offerId) {
         require(_exists(offerId,true), "offer doesn't exist");
         _;
     }
 
-    /**
-     * @notice Require that the specified ID exists
-     */
+   
     modifier counterOfferExits(uint256 counterOfferId) {
         require(_exists(counterOfferId,false), "counter offer doesn't exist");
         _;
@@ -98,7 +98,11 @@ contract NFTSwap is INFTSwap,ReentrancyGuard{
         }
     }
 
-    
+    /// @notice Explain to an end user what this does
+    /// @dev Explain to a developer any extra details
+    /// @param Documents a parameter just like in doxygen (must be followed by parameter name)
+    /// @return Documents the return variables of a contract’s function state variable
+    /// @inheritdoc	Copies all missing tags from the base function (must be followed by the contract name)
     function createOffer(
         OrderTypes.Tokens[] memory _offeredTokens,
         OrderTypes.Tokens[] memory _requestedTokens,
@@ -191,37 +195,6 @@ contract NFTSwap is INFTSwap,ReentrancyGuard{
         }
         _counterOfferIdTracker.increment();
     }
-
-    // function updateCounterOffer(
-    //     uint counterOfferId,
-    //     OrderTypes.Tokens[] memory _offeredTokensUpdate,
-    //     OrderTypes.ERC20Tokens memory _bounty,
-    //     uint _expirationTime
-    //     ) external nonReentrant payable offerExits(offerId){
-    //     OrderTypes.CounterOffer memory counterOffer = counterOffers[counterOfferId];
-    //     require(counterOffer.creator == msg.sender, "You can't update your own counter offer");
-    //     require(_offeredTokensUpdate.length + counterOffer.offeredTokensAmount <= minimumTokensAmount, "Offered tokens must be greater than minimum tokens amount");
-    //     require(_expirationTime > block.timestamp + 300);
-    //     for(uint i = 0; i < _offeredTokensUpdate.length; i++) {
-    //         require(_checkCollectionType(_offeredTokens[i].tokenAddress), "Offered token must be ERC721");
-    //         owner = IERC721(_offeredTokens[i].tokenAddress).ownerOf(_offeredTokens[i].tokenId);
-    //         require(owner == msg.sender, "Offered token must be owned by you");
-    //     }
-    //     if(_bounty.tokenAddress == address(0)){
-    //         // tokenAmount is the amount of funds which is offered part of the deal. Can be positive or negative.
-    //         // If it's positive, the exact amount must have been send with this transaction
-    //         require(_bounty.tokenAmount <= 0 || msg.value == uint(_bounty.tokenAmount));
-    //         require(_bounty.tokenAmount >= 0 || msg.value == 0);
-    //     }
-    //     else{
-    //         if(_bounty.tokenAmount > 0){
-    //             IERC20(_bounty.tokenAddress).safeTransferFrom(msg.sender,address(this), _bounty.tokenAmount);
-    //         }
-    //     }
-
-    // }
-
-
     function acceptOffice(uint256 _offerId) external payable offerExits(_offerId) {
         OrderTypes.Offer storage offer = offers[_offerId];
         require(offer.creator != msg.sender, "You can't accept your own offer");
